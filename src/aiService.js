@@ -1,5 +1,5 @@
-// Client-side AI Investigation Engine
-// Generates structured investigation and editable customer email draft with zero API costs.
+// Client-side AI investigation engine.
+// Generates structured investigation and editable customer email drafts without external API calls.
 
 export function generateInvestigation(order, customer, ruleEvaluation) {
   const customerFirstName = customer?.name?.split(' ')[0] || order.customerName.split(' ')[0] || 'Customer';
@@ -85,7 +85,7 @@ ShopPilot Support Team`;
     email_body: emailBody,
     requires_human_review: true,
     provider: 'ShopPilot AI Engine',
-    model: 'Deterministic SLA Copilot (Demo Mode)',
+    model: 'Deterministic SLA Copilot',
     is_fallback: true,
     investigated_at: new Date().toISOString()
   };

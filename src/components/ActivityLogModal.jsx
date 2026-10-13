@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Activity, ShieldCheck, Sparkles, AlertTriangle, RefreshCw, CheckCircle, Clock } from 'lucide-react';
+import { X, Activity, Sparkles, AlertTriangle, RefreshCw, CheckCircle, Clock } from 'lucide-react';
 
 export default function ActivityLogModal({
   activities,
@@ -52,13 +52,13 @@ export default function ActivityLogModal({
             <div>
               <h2 className="text-base font-bold text-white">Activity & Audit Trail</h2>
               <p className="text-xs text-slate-400">
-                Log of automated SLA checks, AI investigations, and operator approvals
+                Automated SLA checks, AI investigations, and operator approvals
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition"
           >
             <X className="w-5 h-5" />
           </button>
@@ -68,7 +68,7 @@ export default function ActivityLogModal({
         <div className="px-5 py-3 border-b border-slate-800/80 bg-slate-950/20 flex gap-2 overflow-x-auto text-xs">
           <button
             onClick={() => setFilter('all')}
-            className={`px-3 py-1 rounded-lg transition ${
+            className={`px-3 py-1 rounded-xl transition ${
               filter === 'all' ? 'bg-indigo-600 text-white font-medium' : 'bg-slate-800 text-slate-400 hover:text-white'
             }`}
           >
@@ -76,7 +76,7 @@ export default function ActivityLogModal({
           </button>
           <button
             onClick={() => setFilter('approval')}
-            className={`px-3 py-1 rounded-lg transition ${
+            className={`px-3 py-1 rounded-xl transition ${
               filter === 'approval' ? 'bg-emerald-600 text-white font-medium' : 'bg-slate-800 text-slate-400 hover:text-white'
             }`}
           >
@@ -84,7 +84,7 @@ export default function ActivityLogModal({
           </button>
           <button
             onClick={() => setFilter('ai')}
-            className={`px-3 py-1 rounded-lg transition ${
+            className={`px-3 py-1 rounded-xl transition ${
               filter === 'ai' ? 'bg-indigo-600 text-white font-medium' : 'bg-slate-800 text-slate-400 hover:text-white'
             }`}
           >
@@ -92,7 +92,7 @@ export default function ActivityLogModal({
           </button>
           <button
             onClick={() => setFilter('flag')}
-            className={`px-3 py-1 rounded-lg transition ${
+            className={`px-3 py-1 rounded-xl transition ${
               filter === 'flag' ? 'bg-rose-600 text-white font-medium' : 'bg-slate-800 text-slate-400 hover:text-white'
             }`}
           >
@@ -133,7 +133,7 @@ export default function ActivityLogModal({
                   </p>
 
                   {act.draftContent && (
-                    <div className="mt-2 p-2.5 rounded-lg bg-slate-950/70 border border-slate-800 text-[11px] text-slate-300">
+                    <div className="mt-2 p-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-[11px] text-slate-300">
                       <div className="font-semibold text-slate-200">Subject: {act.draftContent.subject}</div>
                       <div className="text-slate-400 mt-1 line-clamp-2">{act.draftContent.body}</div>
                     </div>
@@ -162,3 +162,5 @@ export default function ActivityLogModal({
     </div>
   );
 }
+
+

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Store, Key, CheckCircle, AlertTriangle, RefreshCw, ShieldCheck, Sparkles, ExternalLink } from 'lucide-react';
+import { X, Store, CheckCircle, AlertTriangle, ShieldCheck, Sparkles } from 'lucide-react';
 
 export default function SettingsModal({
   onClose,
@@ -8,11 +8,11 @@ export default function SettingsModal({
   onSyncWooCommerce,
   onResetDemo
 }) {
-  // Local form state
-  const [activeTab, setActiveTab] = useState('ai'); // 'ai' | 'woocommerce'
+  const [activeTab, setActiveTab] = useState('ai');
   const [aiProvider, setAiProvider] = useState(status?.aiProvider || 'template');
   const [geminiKey, setGeminiKey] = useState('');
   const [openaiKey, setOpenaiKey] = useState('');
+  const [groqKey, setGroqKey] = useState('');
   
   const [storeUrl, setStoreUrl] = useState('');
   const [consumerKey, setConsumerKey] = useState('');
@@ -37,7 +37,8 @@ export default function SettingsModal({
         body: JSON.stringify({
           aiProvider,
           geminiApiKey: geminiKey,
-          openaiApiKey: openaiKey
+          openaiApiKey: openaiKey,
+          groqApiKey: groqKey
         })
       });
 
@@ -110,15 +111,15 @@ export default function SettingsModal({
               <Store className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">System & Integration Settings</h2>
+              <h2 className="text-base font-bold text-white">System Settings</h2>
               <p className="text-xs text-slate-400">
-                Configure AI engine credentials or connect an optional WooCommerce test store
+                Configure AI credentials or connect a read-only WooCommerce store
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition"
           >
             <X className="w-5 h-5" />
           </button>
@@ -147,7 +148,7 @@ export default function SettingsModal({
             }`}
           >
             <Store className="w-3.5 h-3.5" />
-            <span>WooCommerce Store (Optional)</span>
+            <span>WooCommerce Store</span>
           </button>
         </div>
 
@@ -160,9 +161,9 @@ export default function SettingsModal({
               <div className="p-3.5 rounded-xl bg-indigo-950/30 border border-indigo-500/20 text-xs text-indigo-200 leading-relaxed">
                 <div className="flex items-center gap-1.5 font-bold text-indigo-300 mb-1">
                   <ShieldCheck className="w-4 h-4" />
-                  <span>Cost-Control & Zero-Spend Guardrail</span>
+                  <span>Cost Control Guardrail</span>
                 </div>
-                ShopPilot AI includes a built-in deterministic fallback engine that requires <strong>zero API credits</strong>. When live LLM keys are supplied, exactly 1 compact prompt per user-triggered investigation is sent.
+                ShopPilot AI includes a deterministic fallback engine that requires no external API calls. When live LLM keys are supplied, one compact prompt is sent per user-triggered investigation.
               </div>
 
               <div>
@@ -171,6 +172,39 @@ export default function SettingsModal({
                 </label>
                 <div className="space-y-2">
                   
+                  <label className="flex items-start gap-3 p-3 rounded-xl bg-slate-950/50 border border-slate-800 hover:border-slate-700 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="provider"
+                      value="groq"
+                      checked={aiProvider === 'groq'}
+                      onChange={() => setAiProvider('groq')}
+                      className="mt-1 text-indigo-600 focus:ring-indigo-500"
+                    />
+                    <div className="flex-1">
+                      <div className="text-xs font-bold text-white flex items-center gap-2">
+                        <span>Groq (GPT OSS 20B)</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30 font-semibold">
+                          Fast JSON
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-400 mt-0.5">
+                        Low-latency OpenAI-compatible chat completions using GroqCloud.
+                      </p>
+                      {aiProvider === 'groq' && (
+                        <div className="mt-2.5">
+                          <input
+                            type="password"
+                            placeholder="Paste your GROQ_API_KEY..."
+                            value={groqKey}
+                            onChange={(e) => setGroqKey(e.target.value)}
+                            className="w-full px-3 py-1.5 text-xs bg-slate-900 border border-slate-700 rounded-xl text-slate-200 focus:outline-none focus:border-indigo-500"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </label>
+
                   <label className="flex items-start gap-3 p-3 rounded-xl bg-slate-950/50 border border-slate-800 hover:border-slate-700 cursor-pointer">
                     <input
                       type="radio"
@@ -184,11 +218,11 @@ export default function SettingsModal({
                       <div className="text-xs font-bold text-white flex items-center gap-2">
                         <span>Deterministic Template Engine</span>
                         <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold">
-                          Free / Instant
+                          Offline
                         </span>
                       </div>
                       <p className="text-[11px] text-slate-400 mt-0.5">
-                        Uses rule-guided template synthesis without calling external LLM APIs. Ideal for zero cost testing.
+                        Uses rule-guided template synthesis without calling external LLM APIs.
                       </p>
                     </div>
                   </label>
@@ -219,7 +253,7 @@ export default function SettingsModal({
                             placeholder="Paste your GEMINI_API_KEY..."
                             value={geminiKey}
                             onChange={(e) => setGeminiKey(e.target.value)}
-                            className="w-full px-3 py-1.5 text-xs bg-slate-900 border border-slate-700 rounded-lg text-slate-200 focus:outline-none focus:border-indigo-500"
+                            className="w-full px-3 py-1.5 text-xs bg-slate-900 border border-slate-700 rounded-xl text-slate-200 focus:outline-none focus:border-indigo-500"
                           />
                         </div>
                       )}
@@ -249,7 +283,7 @@ export default function SettingsModal({
                             placeholder="Paste your OPENAI_API_KEY..."
                             value={openaiKey}
                             onChange={(e) => setOpenaiKey(e.target.value)}
-                            className="w-full px-3 py-1.5 text-xs bg-slate-900 border border-slate-700 rounded-lg text-slate-200 focus:outline-none focus:border-indigo-500"
+                            className="w-full px-3 py-1.5 text-xs bg-slate-900 border border-slate-700 rounded-xl text-slate-200 focus:outline-none focus:border-indigo-500"
                           />
                         </div>
                       )}
@@ -263,7 +297,7 @@ export default function SettingsModal({
                 {saveSuccess && (
                   <span className="text-xs text-emerald-400 flex items-center gap-1">
                     <CheckCircle className="w-3.5 h-3.5" />
-                    Settings saved successfully!
+                    Settings saved.
                   </span>
                 )}
                 <button
@@ -286,7 +320,7 @@ export default function SettingsModal({
                   <Store className="w-4 h-4 text-indigo-400" />
                   <span>Read-Only WooCommerce Connector</span>
                 </div>
-                If you have an existing WooCommerce test store, enter read-only REST API keys below to sync live orders. If not, the demo dataset is ready to use without any setup.
+                Enter read-only REST API keys to sync store orders. Without credentials, the app continues using bundled sample data.
               </div>
 
               <div className="space-y-3">
@@ -297,7 +331,7 @@ export default function SettingsModal({
                     placeholder="https://example.com"
                     value={storeUrl}
                     onChange={(e) => setStoreUrl(e.target.value)}
-                    className="w-full mt-1 px-3 py-1.5 text-xs bg-slate-950 border border-slate-700 rounded-lg text-slate-200 focus:outline-none focus:border-indigo-500"
+                    className="w-full mt-1 px-3 py-1.5 text-xs bg-slate-950 border border-slate-700 rounded-xl text-slate-200 focus:outline-none focus:border-indigo-500"
                   />
                 </div>
 
@@ -308,7 +342,7 @@ export default function SettingsModal({
                     placeholder="ck_..."
                     value={consumerKey}
                     onChange={(e) => setConsumerKey(e.target.value)}
-                    className="w-full mt-1 px-3 py-1.5 text-xs bg-slate-950 border border-slate-700 rounded-lg text-slate-200 focus:outline-none focus:border-indigo-500 font-mono"
+                    className="w-full mt-1 px-3 py-1.5 text-xs bg-slate-950 border border-slate-700 rounded-xl text-slate-200 focus:outline-none focus:border-indigo-500 font-mono"
                   />
                 </div>
 
@@ -319,7 +353,7 @@ export default function SettingsModal({
                     placeholder="cs_..."
                     value={consumerSecret}
                     onChange={(e) => setConsumerSecret(e.target.value)}
-                    className="w-full mt-1 px-3 py-1.5 text-xs bg-slate-950 border border-slate-700 rounded-lg text-slate-200 focus:outline-none focus:border-indigo-500 font-mono"
+                    className="w-full mt-1 px-3 py-1.5 text-xs bg-slate-950 border border-slate-700 rounded-xl text-slate-200 focus:outline-none focus:border-indigo-500 font-mono"
                   />
                 </div>
               </div>
@@ -354,7 +388,7 @@ export default function SettingsModal({
                   disabled={syncingWc || !storeUrl}
                   className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow transition cursor-pointer disabled:opacity-50"
                 >
-                  {syncingWc ? 'Syncing...' : 'Fetch & Switch to Live Store'}
+                  {syncingWc ? 'Syncing...' : 'Fetch Orders'}
                 </button>
               </div>
 
@@ -367,3 +401,5 @@ export default function SettingsModal({
     </div>
   );
 }
+
+

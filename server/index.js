@@ -21,7 +21,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(distPath));
 
-// In-memory runtime state for hackathon demo
+// In-memory runtime state for bundled sample data or read-only store sync.
 let currentDataMode = 'demo'; // 'demo' | 'live'
 let orders = [...demoOrders];
 let customers = [...demoCustomers];
@@ -30,17 +30,25 @@ let activityLog = [...initialActivityLog];
 let activeSettings = {
   geminiApiKey: process.env.GEMINI_API_KEY || '',
   openaiApiKey: process.env.OPENAI_API_KEY || '',
+  groqApiKey: process.env.GROQ_API_KEY || '',
   wcStoreUrl: process.env.WC_STORE_URL || '',
   wcConsumerKey: process.env.WC_CONSUMER_KEY || '',
   wcConsumerSecret: process.env.WC_CONSUMER_SECRET || '',
-  aiProvider: process.env.GEMINI_API_KEY ? 'gemini' : process.env.OPENAI_API_KEY ? 'openai' : 'template'
+  aiProvider: process.env.GROQ_API_KEY ? 'groq' : process.env.GEMINI_API_KEY ? 'gemini' : process.env.OPENAI_API_KEY ? 'openai' : 'template'
 };
+
+function getProviderApiKey(provider) {
+  if (provider === 'groq') return activeSettings.groqApiKey;
+  if (provider === 'gemini') return activeSettings.geminiApiKey;
+  if (provider === 'openai') return activeSettings.openaiApiKey;
+  return '';
+}
 
 // --- API Endpoints ---
 
 // System status and configuration health
 app.get('/api/status', (req, res) => {
-  const hasLiveAiKey = !!(activeSettings.geminiApiKey || activeSettings.openaiApiKey);
+  const hasLiveAiKey = !!(activeSettings.groqApiKey || activeSettings.geminiApiKey || activeSettings.openaiApiKey);
   res.json({
     status: 'online',
     app: 'ShopPilot AI',
@@ -120,7 +128,7 @@ app.post('/api/investigate', async (req, res) => {
 
   try {
     const investigation = await investigateOrder(order, customer, ruleEvaluation, {
-      apiKey: activeSettings.geminiApiKey || activeSettings.openaiApiKey,
+      apiKey: getProviderApiKey(activeSettings.aiProvider),
       provider: activeSettings.aiProvider
     });
 
@@ -179,7 +187,6 @@ app.post('/api/activity', (req, res) => {
   res.status(201).json(newActivity);
 });
 
-// Reset demo data
 app.post('/api/reset-demo', (req, res) => {
   orders = [...demoOrders];
   customers = [...demoCustomers];
@@ -190,21 +197,22 @@ app.post('/api/reset-demo', (req, res) => {
     timestamp: new Date().toISOString(),
     type: 'system',
     orderNumber: 'System',
-    title: 'Demo dataset reloaded',
-    description: 'Reset order and customer state back to the original demo records.',
+    title: 'Sample dataset reloaded',
+    description: 'Reset order and customer state back to the original sample records.',
     operator: 'System'
   };
   activityLog.unshift(resetLog);
 
-  res.json({ success: true, message: 'Demo dataset reloaded', dataMode: currentDataMode });
+  res.json({ success: true, message: 'Sample dataset reloaded', dataMode: currentDataMode });
 });
 
 // Settings & credentials update
 app.post('/api/settings', (req, res) => {
-  const { geminiApiKey, openaiApiKey, aiProvider, wcStoreUrl, wcConsumerKey, wcConsumerSecret } = req.body;
+  const { geminiApiKey, openaiApiKey, groqApiKey, aiProvider, wcStoreUrl, wcConsumerKey, wcConsumerSecret } = req.body;
 
   if (geminiApiKey !== undefined) activeSettings.geminiApiKey = geminiApiKey.trim();
   if (openaiApiKey !== undefined) activeSettings.openaiApiKey = openaiApiKey.trim();
+  if (groqApiKey !== undefined) activeSettings.groqApiKey = groqApiKey.trim();
   if (aiProvider !== undefined) activeSettings.aiProvider = aiProvider;
   if (wcStoreUrl !== undefined) activeSettings.wcStoreUrl = wcStoreUrl.trim();
   if (wcConsumerKey !== undefined) activeSettings.wcConsumerKey = wcConsumerKey.trim();
@@ -215,6 +223,7 @@ app.post('/api/settings', (req, res) => {
     settings: {
       hasGeminiKey: !!activeSettings.geminiApiKey,
       hasOpenaiKey: !!activeSettings.openaiApiKey,
+      hasGroqKey: !!activeSettings.groqApiKey,
       aiProvider: activeSettings.aiProvider,
       wcStoreUrl: activeSettings.wcStoreUrl,
       hasWcKey: !!activeSettings.wcConsumerKey

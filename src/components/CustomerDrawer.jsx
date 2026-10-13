@@ -12,7 +12,6 @@ export default function CustomerDrawer({
     <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/70 backdrop-blur-sm flex justify-end animate-in fade-in duration-200">
       <div className="w-full max-w-md bg-slate-900 border-l border-slate-800 h-full p-6 flex flex-col shadow-2xl">
         
-        {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-800 pb-4">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full overflow-hidden bg-slate-800 border-2 border-indigo-500/30 flex items-center justify-center">
@@ -29,16 +28,13 @@ export default function CustomerDrawer({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Content */}
         <div className="flex-1 overflow-y-auto py-5 space-y-6">
-          
-          {/* Contact Details */}
           <div className="space-y-2.5 bg-slate-950/50 p-4 rounded-xl border border-slate-800/80">
             <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
               Contact & Location
@@ -67,7 +63,6 @@ export default function CustomerDrawer({
             )}
           </div>
 
-          {/* Spend Summary */}
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-slate-950/50 p-4 rounded-xl border border-slate-800/80 text-center">
               <div className="text-xs text-slate-400">Total Orders</div>
@@ -79,7 +74,6 @@ export default function CustomerDrawer({
             </div>
           </div>
 
-          {/* Order History */}
           <div className="space-y-3">
             <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2">
               <ShoppingBag className="w-3.5 h-3.5 text-indigo-400" />
@@ -118,3 +112,4 @@ export default function CustomerDrawer({
     </div>
   );
 }
+

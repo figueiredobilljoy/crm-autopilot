@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Search, Filter, AlertTriangle, CheckCircle, Clock, Eye, Sparkles } from 'lucide-react';
+import { Search, AlertTriangle, CheckCircle, Clock, Sparkles } from 'lucide-react';
 
 export default function OrderList({
   orders,
   selectedOrderId,
   onSelectOrder
 }) {
-  const [filterStatus, setFilterStatus] = useState('all'); // 'all' | 'attention' | 'processing' | 'on-hold' | 'completed'
+  const [filterStatus, setFilterStatus] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredOrders = orders.filter(order => {
@@ -167,7 +167,6 @@ export default function OrderList({
                       <div className="text-[11px] text-slate-400">{order.customerEmail}</div>
                     </td>
 
-                    {/* Age in Demo */}
                     <td className="px-5 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-1.5 text-slate-300">
                         <Clock className="w-3.5 h-3.5 text-slate-400" />
@@ -212,14 +211,14 @@ export default function OrderList({
                           e.stopPropagation();
                           onSelectOrder(order);
                         }}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
                           needsAttention
                             ? 'bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 border border-rose-500/30'
                             : 'bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30 border border-indigo-500/30'
                         }`}
                       >
                         <Sparkles className="w-3.5 h-3.5" />
-                        <span>Inspect & AI</span>
+                        <span>Review</span>
                       </button>
                     </td>
                   </tr>
@@ -233,3 +232,5 @@ export default function OrderList({
     </div>
   );
 }
+
+

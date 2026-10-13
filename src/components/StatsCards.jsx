@@ -5,11 +5,15 @@ export default function StatsCards({ orders, customers }) {
   const totalOrders = orders.length;
   const attentionOrders = orders.filter(o => o.ruleEvaluation?.needsAttention);
   const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
+  const openTickets = orders.reduce((sum, o) => sum + (o.supportTickets || 0), 0);
+  const avgNps = customers.length
+    ? Math.round(customers.reduce((sum, c) => sum + (c.npsScore || 0), 0) / customers.length)
+    : 0;
   const currencySymbol = orders[0]?.currencySymbol || '₹';
 
   const stats = [
     {
-      title: 'Total Demo Orders',
+      title: 'Total Orders',
       value: totalOrders,
       subtitle: `${orders.filter(o => o.status === 'completed').length} fulfilled orders`,
       icon: ShoppingBag,
@@ -20,7 +24,7 @@ export default function StatsCards({ orders, customers }) {
     {
       title: 'Needs Attention',
       value: attentionOrders.length,
-      subtitle: `${attentionOrders.filter(o => o.ruleEvaluation?.severity === 'high').length} high severity SLA breach`,
+      subtitle: `${attentionOrders.filter(o => o.priority === 'High' || o.ruleEvaluation?.severity === 'high').length} high priority workflows`,
       icon: AlertCircle,
       color: 'text-rose-400',
       bgColor: 'bg-rose-500/10',
@@ -30,7 +34,7 @@ export default function StatsCards({ orders, customers }) {
     {
       title: 'Active Customers',
       value: customers.length,
-      subtitle: 'Sample CRM accounts',
+      subtitle: `Avg NPS ${avgNps}/10 across accounts`,
       icon: Users,
       color: 'text-emerald-400',
       bgColor: 'bg-emerald-500/10',
@@ -39,7 +43,7 @@ export default function StatsCards({ orders, customers }) {
     {
       title: 'Total Order Volume',
       value: `${currencySymbol}${totalRevenue.toLocaleString()}`,
-      subtitle: 'Gross tracked revenue',
+      subtitle: `${openTickets} open support tickets tracked`,
       icon: IndianRupee,
       color: 'text-amber-400',
       bgColor: 'bg-amber-500/10',
@@ -54,7 +58,7 @@ export default function StatsCards({ orders, customers }) {
         return (
           <div
             key={idx}
-            className={`p-5 rounded-2xl bg-slate-900/60 border ${stat.borderColor} backdrop-blur relative overflow-hidden transition-all hover:bg-slate-900/90`}
+            className={`p-5 rounded-xl bg-slate-900/60 border ${stat.borderColor} backdrop-blur relative overflow-hidden transition-all hover:bg-slate-900/90`}
           >
             {stat.alert && (
               <span className="absolute top-3 right-3 flex h-2.5 w-2.5">
@@ -84,3 +88,5 @@ export default function StatsCards({ orders, customers }) {
     </div>
   );
 }
+
+

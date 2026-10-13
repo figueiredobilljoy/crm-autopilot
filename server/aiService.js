@@ -1,5 +1,5 @@
 // AI Investigation Service for ShopPilot AI
-// Integrates with Google Gemini / OpenAI when configured, or uses a deterministic template fallback.
+// Integrates with Groq / Google Gemini / OpenAI when configured, or uses a deterministic template fallback.
 
 const investigationCache = new Map();
 
@@ -13,14 +13,16 @@ export async function investigateOrder(order, customer, ruleEvaluation, config =
     };
   }
 
-  const apiKey = config.apiKey || process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY;
-  const provider = config.provider || (process.env.GEMINI_API_KEY ? 'gemini' : process.env.OPENAI_API_KEY ? 'openai' : 'template');
+  const apiKey = config.apiKey || process.env.GROQ_API_KEY || process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY;
+  const provider = config.provider || (process.env.GROQ_API_KEY ? 'groq' : process.env.GEMINI_API_KEY ? 'gemini' : process.env.OPENAI_API_KEY ? 'openai' : 'template');
 
   // If live provider is requested and key exists, attempt LLM call
-  if (apiKey && (provider === 'gemini' || provider === 'openai')) {
+  if (apiKey && (provider === 'groq' || provider === 'gemini' || provider === 'openai')) {
     try {
       let result;
-      if (provider === 'gemini') {
+      if (provider === 'groq') {
+        result = await callGroqAPI(apiKey, order, customer, ruleEvaluation);
+      } else if (provider === 'gemini') {
         result = await callGeminiAPI(apiKey, order, customer, ruleEvaluation);
       } else {
         result = await callOpenAIAPI(apiKey, order, customer, ruleEvaluation);
@@ -132,6 +134,81 @@ ShopPilot Support Team`;
   };
 }
 
+async function callGroqAPI(apiKey, order, customer, ruleEvaluation) {
+  const prompt = `Review this WooCommerce order using ONLY the supplied data. Do NOT invent shipping, tracking, warehouse, carrier, refund, or delivery facts. Explain why it may need attention, recommend a safe next step, and draft a polite merchant-to-customer email.
+
+Order Data:
+- Order Number: ${order.orderNumber}
+- Customer: ${order.customerName} (${customer?.email || order.customerEmail})
+- Status: ${order.status}
+- Age: ${order.ageDays} days
+- Total: ${order.currencySymbol}${order.total}
+- Payment: ${order.paymentMethod}
+- Shipping Method: ${order.shippingMethod}
+- Fulfillment Stage: ${order.fulfillmentStage || 'Not supplied'}
+- Warehouse: ${order.warehouse || 'Not supplied'}
+- Tracking Status: ${order.trackingStatus || 'Not supplied'}
+- Inventory Status: ${order.inventoryStatus || 'Not supplied'}
+- Priority: ${order.priority || 'Normal'}
+- Customer Sentiment: ${order.customerSentiment || 'Neutral'}
+- Refund Risk: ${order.refundRisk || 'Low'}
+- Open Support Tickets: ${order.supportTickets || 0}
+- Existing Next Best Action: ${order.nextBestAction || 'None supplied'}
+- Items: ${order.items.map(i => `${i.quantity}x ${i.name} (${i.sku})`).join(', ')}
+- Notes: ${order.internalNotes || 'None supplied'}
+- Rule Alert: ${ruleEvaluation.explanation}
+
+Return only valid JSON with these exact keys:
+{
+  "reason": "Brief 1-2 sentence explanation of why this order was flagged",
+  "summary": "Concise summary based strictly on supplied facts",
+  "recommended_next_step": "Actionable next step for the merchant store team",
+  "email_subject": "Professional email subject line for customer",
+  "email_body": "Polite, empathetic email draft addressed to the customer",
+  "requires_human_review": true
+}`;
+
+  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: process.env.GROQ_MODEL || 'openai/gpt-oss-20b',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are ShopPilot AI, a careful WooCommerce CRM copilot. Use only supplied facts. Return strict JSON. Never claim an email was sent.'
+        },
+        { role: 'user', content: prompt }
+      ],
+      response_format: { type: 'json_object' },
+      temperature: 0.2,
+      max_completion_tokens: 1200
+    })
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Groq API error: ${response.status} - ${errorText}`);
+  }
+
+  const data = await response.json();
+  const content = data.choices?.[0]?.message?.content;
+  if (!content) throw new Error('No candidate response from Groq API');
+
+  const parsed = JSON.parse(content);
+  return {
+    ...parsed,
+    requires_human_review: true,
+    provider: 'Groq',
+    model: data.model || process.env.GROQ_MODEL || 'openai/gpt-oss-20b',
+    is_fallback: false,
+    investigated_at: new Date().toISOString()
+  };
+}
+
 async function callGeminiAPI(apiKey, order, customer, ruleEvaluation) {
   const prompt = `You are ShopPilot AI, an intelligent CRM assistant for WooCommerce merchants.
 Review this order using ONLY the supplied data. Do NOT invent fake delivery tracking numbers, shipping carriers, or unsupplied facts.
@@ -144,6 +221,10 @@ Order Data:
 - Age: ${order.ageDays} days
 - Total: ${order.currencySymbol}${order.total}
 - Payment: ${order.paymentMethod}
+- Fulfillment Stage: ${order.fulfillmentStage || 'Not supplied'}
+- Inventory Status: ${order.inventoryStatus || 'Not supplied'}
+- Customer Sentiment: ${order.customerSentiment || 'Neutral'}
+- Refund Risk: ${order.refundRisk || 'Low'}
 - Items: ${JSON.stringify(order.items)}
 - Notes: ${order.internalNotes}
 - Rule Alert: ${ruleEvaluation.explanation}
@@ -197,6 +278,10 @@ Order Data:
 - Order Number: ${order.orderNumber}
 - Customer: ${order.customerName}
 - Status: ${order.status} (${order.ageDays} days old)
+- Fulfillment Stage: ${order.fulfillmentStage || 'Not supplied'}
+- Inventory Status: ${order.inventoryStatus || 'Not supplied'}
+- Customer Sentiment: ${order.customerSentiment || 'Neutral'}
+- Refund Risk: ${order.refundRisk || 'Low'}
 - Items: ${order.items.map(i => `${i.quantity}x ${i.name}`).join(', ')}
 - Total: ${order.currencySymbol}${order.total}
 - Rule Flag: ${ruleEvaluation.explanation}`;

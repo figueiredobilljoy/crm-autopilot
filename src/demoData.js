@@ -1,5 +1,5 @@
-// Demo Data for ShopPilot AI CRM
-// Fictional records for WooCommerce store demo
+// Sample data for ShopPilot AI CRM.
+// Fictional records for local development and product previews.
 
 export const demoCustomers = [
   {
@@ -10,7 +10,15 @@ export const demoCustomers = [
     city: "Panaji, Goa",
     totalOrders: 3,
     totalSpent: 6497,
-    customerSince: "2025-08-14"
+    customerSince: "2025-08-14",
+    loyaltyTier: "Gold",
+    preferredChannel: "WhatsApp",
+    lastContactedAt: "2026-10-11T10:15:00Z",
+    npsScore: 8,
+    riskProfile: "Delay sensitive",
+    marketingOptIn: true,
+    openTickets: 1,
+    tags: ["repeat buyer", "eco apparel", "coastal delivery"]
   },
   {
     id: "cust-2",
@@ -20,7 +28,15 @@ export const demoCustomers = [
     city: "Bengaluru, Karnataka",
     totalOrders: 1,
     totalSpent: 899,
-    customerSince: "2026-03-02"
+    customerSince: "2026-03-02",
+    loyaltyTier: "New",
+    preferredChannel: "Email",
+    lastContactedAt: "2026-10-12T17:40:00Z",
+    npsScore: 9,
+    riskProfile: "Low risk",
+    marketingOptIn: true,
+    openTickets: 0,
+    tags: ["first purchase", "delivered"]
   },
   {
     id: "cust-3",
@@ -30,7 +46,15 @@ export const demoCustomers = [
     city: "Mumbai, Maharashtra",
     totalOrders: 5,
     totalSpent: 11250,
-    customerSince: "2025-01-20"
+    customerSince: "2025-01-20",
+    loyaltyTier: "Platinum",
+    preferredChannel: "Email",
+    lastContactedAt: "2026-10-12T09:05:00Z",
+    npsScore: 7,
+    riskProfile: "Payment follow-up needed",
+    marketingOptIn: false,
+    openTickets: 2,
+    tags: ["high value", "gift buyer", "manual payment"]
   },
   {
     id: "cust-4",
@@ -40,7 +64,15 @@ export const demoCustomers = [
     city: "New Delhi, Delhi",
     totalOrders: 2,
     totalSpent: 5699,
-    customerSince: "2025-11-05"
+    customerSince: "2025-11-05",
+    loyaltyTier: "Silver",
+    preferredChannel: "SMS",
+    lastContactedAt: "2026-10-13T06:10:00Z",
+    npsScore: 8,
+    riskProfile: "Low risk",
+    marketingOptIn: true,
+    openTickets: 0,
+    tags: ["stationery", "north zone"]
   },
   {
     id: "cust-5",
@@ -50,7 +82,33 @@ export const demoCustomers = [
     city: "Ahmedabad, Gujarat",
     totalOrders: 4,
     totalSpent: 9800,
-    customerSince: "2025-06-11"
+    customerSince: "2025-06-11",
+    loyaltyTier: "Gold",
+    preferredChannel: "WhatsApp",
+    lastContactedAt: "2026-10-10T14:20:00Z",
+    npsScore: 6,
+    riskProfile: "Checkout friction",
+    marketingOptIn: true,
+    openTickets: 1,
+    tags: ["home decor", "abandoned payment"]
+  },
+  {
+    id: "cust-6",
+    name: "Neha Iyer",
+    email: "neha.iyer@example.com",
+    phone: "+91 99008 44321",
+    city: "Chennai, Tamil Nadu",
+    totalOrders: 6,
+    totalSpent: 18490,
+    customerSince: "2024-12-03",
+    loyaltyTier: "Platinum",
+    preferredChannel: "Email",
+    lastContactedAt: "2026-10-08T11:30:00Z",
+    npsScore: 9,
+    riskProfile: "VIP handling",
+    marketingOptIn: true,
+    openTickets: 0,
+    tags: ["vip", "home fragrance", "fast delivery"]
   }
 ];
 
@@ -64,14 +122,29 @@ export const demoOrders = [
     status: "processing",
     ageDays: 4,
     createdAt: "2026-10-09T09:43:50Z",
+    promisedShipDate: "2026-10-11",
     currency: "INR",
     currencySymbol: "₹",
     total: 2499,
+    marginPercent: 36,
+    priority: "High",
     paymentMethod: "UPI / Razorpay (Paid)",
     shippingMethod: "Standard Express Delivery",
+    fulfillmentStage: "Packed - awaiting carrier scan",
+    warehouse: "Goa FC-1",
+    carrier: "Delhivery",
+    trackingStatus: "Tracking not assigned",
+    trackingId: null,
+    inventoryStatus: "Reserved and packed",
+    fraudRisk: "Low",
+    customerSentiment: "Concerned",
+    refundRisk: "Medium",
+    supportTickets: 1,
+    nextBestAction: "Escalate carrier pickup and send proactive delay note.",
+    tags: ["sla breach", "packed", "carrier scan missing"],
     items: [
-      { id: "item-1", name: "Organic Handwoven Linen Shirt - Sage Green", quantity: 1, price: 1799, sku: "LIN-SHIRT-M-GRN" },
-      { id: "item-2", name: "Handcrafted Coconut Shell Buttons Set", quantity: 1, price: 700, sku: "ACC-BTN-SET" }
+      { id: "item-1", name: "Organic Handwoven Linen Shirt - Sage Green", quantity: 1, price: 1799, sku: "LIN-SHIRT-M-GRN", stock: "in_stock" },
+      { id: "item-2", name: "Handcrafted Coconut Shell Buttons Set", quantity: 1, price: 700, sku: "ACC-BTN-SET", stock: "in_stock" }
     ],
     shippingAddress: {
       address1: "Villa 14, Dona Paula Heights",
@@ -80,6 +153,11 @@ export const demoOrders = [
       postcode: "403004",
       country: "India"
     },
+    timeline: [
+      { label: "Order paid", at: "2026-10-09T09:43:50Z" },
+      { label: "Pack slip generated", at: "2026-10-10T13:05:00Z" },
+      { label: "Warehouse reminder sent", at: "2026-10-12T16:30:00Z" }
+    ],
     internalNotes: "Warehouse pack slip generated 3 days ago. No tracking ID scanned yet."
   },
   {
@@ -91,13 +169,28 @@ export const demoOrders = [
     status: "completed",
     ageDays: 1,
     createdAt: "2026-10-12T09:43:50Z",
+    promisedShipDate: "2026-10-12",
     currency: "INR",
     currencySymbol: "₹",
     total: 899,
+    marginPercent: 42,
+    priority: "Normal",
     paymentMethod: "Credit Card (Paid)",
     shippingMethod: "Standard Express Delivery",
+    fulfillmentStage: "Delivered",
+    warehouse: "Bengaluru FC-2",
+    carrier: "BlueDart",
+    trackingStatus: "Delivered and signed",
+    trackingId: "BD982341",
+    inventoryStatus: "Fulfilled",
+    fraudRisk: "Low",
+    customerSentiment: "Positive",
+    refundRisk: "Low",
+    supportTickets: 0,
+    nextBestAction: "Send post-delivery review request.",
+    tags: ["completed", "review candidate"],
     items: [
-      { id: "item-3", name: "Ceramic Coffee Mug - Indigo Wave", quantity: 1, price: 899, sku: "MUG-IND-01" }
+      { id: "item-3", name: "Ceramic Coffee Mug - Indigo Wave", quantity: 1, price: 899, sku: "MUG-IND-01", stock: "fulfilled" }
     ],
     shippingAddress: {
       address1: "42 Indiranagar 100ft Road",
@@ -106,6 +199,11 @@ export const demoOrders = [
       postcode: "560038",
       country: "India"
     },
+    timeline: [
+      { label: "Payment captured", at: "2026-10-12T09:44:10Z" },
+      { label: "Shipped", at: "2026-10-12T13:55:00Z" },
+      { label: "Delivered", at: "2026-10-13T11:20:00Z" }
+    ],
     internalNotes: "Delivered via BlueDart tracking #BD982341. Customer signed."
   },
   {
@@ -117,13 +215,28 @@ export const demoOrders = [
     status: "on-hold",
     ageDays: 2,
     createdAt: "2026-10-11T09:43:50Z",
+    promisedShipDate: "2026-10-13",
     currency: "INR",
     currencySymbol: "₹",
     total: 1799,
+    marginPercent: 31,
+    priority: "Medium",
     paymentMethod: "Direct Bank Transfer (Awaiting confirmation)",
     shippingMethod: "Surface Courier",
+    fulfillmentStage: "Payment reconciliation",
+    warehouse: "Mumbai FC-1",
+    carrier: "Ecom Express",
+    trackingStatus: "Not shipped",
+    trackingId: null,
+    inventoryStatus: "Reserved - expires in 24h",
+    fraudRisk: "Medium",
+    customerSentiment: "Neutral",
+    refundRisk: "Medium",
+    supportTickets: 2,
+    nextBestAction: "Ask for transaction reference screenshot and hold stock another 24 hours.",
+    tags: ["manual payment", "stock hold", "reconciliation"],
     items: [
-      { id: "item-4", name: "Aromatherapy Soy Candle Gift Box (3-Pack)", quantity: 1, price: 1799, sku: "CNDL-BOX-3" }
+      { id: "item-4", name: "Aromatherapy Soy Candle Gift Box (3-Pack)", quantity: 1, price: 1799, sku: "CNDL-BOX-3", stock: "reserved" }
     ],
     shippingAddress: {
       address1: "Flat 402, Sea Green Apts, Bandra West",
@@ -132,6 +245,11 @@ export const demoOrders = [
       postcode: "400050",
       country: "India"
     },
+    timeline: [
+      { label: "Order created", at: "2026-10-11T09:43:50Z" },
+      { label: "Bank reference received", at: "2026-10-11T10:12:00Z" },
+      { label: "Mismatch flagged by accounts", at: "2026-10-12T12:45:00Z" }
+    ],
     internalNotes: "Bank transfer reference provided by customer does not match statement yet."
   },
   {
@@ -143,13 +261,28 @@ export const demoOrders = [
     status: "processing",
     ageDays: 0,
     createdAt: "2026-10-13T05:43:50Z",
+    promisedShipDate: "2026-10-14",
     currency: "INR",
     currencySymbol: "₹",
     total: 3200,
+    marginPercent: 38,
+    priority: "Normal",
     paymentMethod: "UPI (Paid)",
     shippingMethod: "Standard Express Delivery",
+    fulfillmentStage: "Picked - queued for packing",
+    warehouse: "Delhi FC-1",
+    carrier: "Shiprocket",
+    trackingStatus: "Pending pack completion",
+    trackingId: null,
+    inventoryStatus: "Picked",
+    fraudRisk: "Low",
+    customerSentiment: "Positive",
+    refundRisk: "Low",
+    supportTickets: 0,
+    nextBestAction: "Continue normal packing workflow.",
+    tags: ["within sla", "picked"],
     items: [
-      { id: "item-5", name: "Artisanal Leather Journal - Saddle Tan", quantity: 2, price: 1600, sku: "JRNL-LTHR-BRN" }
+      { id: "item-5", name: "Artisanal Leather Journal - Saddle Tan", quantity: 2, price: 1600, sku: "JRNL-LTHR-BRN", stock: "picked" }
     ],
     shippingAddress: {
       address1: "C-12 Hauz Khas",
@@ -158,6 +291,10 @@ export const demoOrders = [
       postcode: "110016",
       country: "India"
     },
+    timeline: [
+      { label: "Order paid", at: "2026-10-13T05:44:10Z" },
+      { label: "Inventory picked", at: "2026-10-13T07:15:00Z" }
+    ],
     internalNotes: "Ordered today. Picked and queued for packaging."
   },
   {
@@ -169,13 +306,28 @@ export const demoOrders = [
     status: "pending",
     ageDays: 3,
     createdAt: "2026-10-10T09:43:50Z",
+    promisedShipDate: "2026-10-12",
     currency: "INR",
     currencySymbol: "₹",
     total: 5450,
+    marginPercent: 29,
+    priority: "Medium",
     paymentMethod: "Net Banking (Unpaid)",
     shippingMethod: "Standard Delivery",
+    fulfillmentStage: "Checkout incomplete",
+    warehouse: "Ahmedabad Partner Hub",
+    carrier: "Not assigned",
+    trackingStatus: "Not shipped",
+    trackingId: null,
+    inventoryStatus: "Reserved - payment window expired",
+    fraudRisk: "Low",
+    customerSentiment: "Frustrated",
+    refundRisk: "High",
+    supportTickets: 1,
+    nextBestAction: "Send payment recovery link and release stock if no response today.",
+    tags: ["payment pending", "checkout recovery", "inventory hold"],
     items: [
-      { id: "item-6", name: "Brass Tabletop Planter with Stand", quantity: 2, price: 2725, sku: "PLNT-BRS-02" }
+      { id: "item-6", name: "Brass Tabletop Planter with Stand", quantity: 2, price: 2725, sku: "PLNT-BRS-02", stock: "reserved" }
     ],
     shippingAddress: {
       address1: "7 Navrangpura Park",
@@ -184,7 +336,105 @@ export const demoOrders = [
       postcode: "380009",
       country: "India"
     },
+    timeline: [
+      { label: "Checkout started", at: "2026-10-10T09:43:50Z" },
+      { label: "Payment timeout", at: "2026-10-10T09:49:00Z" },
+      { label: "Recovery reminder queued", at: "2026-10-12T10:00:00Z" }
+    ],
     internalNotes: "Payment gateway timed out. Inventory reserved in WooCommerce for 72 hrs."
+  },
+  {
+    id: "1047",
+    orderNumber: "#1047",
+    customerId: "cust-6",
+    customerName: "Neha Iyer",
+    customerEmail: "neha.iyer@example.com",
+    status: "processing",
+    ageDays: 2,
+    createdAt: "2026-10-11T18:12:00Z",
+    promisedShipDate: "2026-10-13",
+    currency: "INR",
+    currencySymbol: "₹",
+    total: 8740,
+    marginPercent: 44,
+    priority: "High",
+    paymentMethod: "Credit Card (Paid)",
+    shippingMethod: "Priority Air",
+    fulfillmentStage: "Partial inventory exception",
+    warehouse: "Chennai FC-3",
+    carrier: "BlueDart Priority",
+    trackingStatus: "Awaiting backordered item",
+    trackingId: null,
+    inventoryStatus: "1 item backordered",
+    fraudRisk: "Low",
+    customerSentiment: "VIP",
+    refundRisk: "Medium",
+    supportTickets: 0,
+    nextBestAction: "Split ship available items and notify VIP customer before SLA breach escalates.",
+    tags: ["vip", "high value", "backorder"],
+    items: [
+      { id: "item-7", name: "Sandalwood Reed Diffuser Set", quantity: 2, price: 1850, sku: "DIFF-SND-02", stock: "in_stock" },
+      { id: "item-8", name: "Handblown Glass Vase - Amber", quantity: 1, price: 5040, sku: "VASE-AMB-L", stock: "backordered" }
+    ],
+    shippingAddress: {
+      address1: "18 Besant Avenue",
+      city: "Chennai",
+      state: "Tamil Nadu",
+      postcode: "600090",
+      country: "India"
+    },
+    timeline: [
+      { label: "Order paid", at: "2026-10-11T18:13:00Z" },
+      { label: "Backorder detected", at: "2026-10-12T08:55:00Z" },
+      { label: "VIP watchlist added", at: "2026-10-12T09:10:00Z" }
+    ],
+    internalNotes: "VIP customer. Vase is backordered; diffuser set can ship today."
+  },
+  {
+    id: "1048",
+    orderNumber: "#1048",
+    customerId: "cust-1",
+    customerName: "Maya Fernandes",
+    customerEmail: "maya.fernandes@example.com",
+    status: "completed",
+    ageDays: 6,
+    createdAt: "2026-10-07T12:05:00Z",
+    promisedShipDate: "2026-10-08",
+    currency: "INR",
+    currencySymbol: "₹",
+    total: 1299,
+    marginPercent: 33,
+    priority: "Normal",
+    paymentMethod: "UPI / Razorpay (Paid)",
+    shippingMethod: "Standard Delivery",
+    fulfillmentStage: "Delivered",
+    warehouse: "Goa FC-1",
+    carrier: "Delhivery",
+    trackingStatus: "Delivered",
+    trackingId: "DLV1129048",
+    inventoryStatus: "Fulfilled",
+    fraudRisk: "Low",
+    customerSentiment: "Positive",
+    refundRisk: "Low",
+    supportTickets: 0,
+    nextBestAction: "Use as positive history context for current delayed order.",
+    tags: ["repeat customer", "delivered"],
+    items: [
+      { id: "item-9", name: "Block Print Cotton Tote", quantity: 1, price: 1299, sku: "TOTE-BLK-01", stock: "fulfilled" }
+    ],
+    shippingAddress: {
+      address1: "Villa 14, Dona Paula Heights",
+      city: "Panaji",
+      state: "Goa",
+      postcode: "403004",
+      country: "India"
+    },
+    timeline: [
+      { label: "Order paid", at: "2026-10-07T12:05:30Z" },
+      { label: "Shipped", at: "2026-10-08T10:00:00Z" },
+      { label: "Delivered", at: "2026-10-09T16:40:00Z" }
+    ],
+    internalNotes: "Previous delivery was smooth; useful context for service recovery."
   }
 ];
 
@@ -206,5 +456,14 @@ export const initialActivityLog = [
     title: "Order placed on hold",
     description: "Order #1044 marked 'on-hold' awaiting direct bank transfer reconciliation.",
     operator: "Payment Gateway"
+  },
+  {
+    id: "act-3",
+    timestamp: new Date(Date.now() - 7 * 60 * 60 * 1000).toISOString(),
+    type: "system_flag",
+    orderNumber: "#1047",
+    title: "VIP backorder watch opened",
+    description: "Order #1047 contains one backordered item and qualifies for proactive VIP handling.",
+    operator: "Inventory Sentinel"
   }
 ];

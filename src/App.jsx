@@ -6,12 +6,13 @@ import OrderDetailPanel from './components/OrderDetailPanel.jsx';
 import CustomerDrawer from './components/CustomerDrawer.jsx';
 import ActivityLogModal from './components/ActivityLogModal.jsx';
 import SettingsModal from './components/SettingsModal.jsx';
+import AgenticChatbot from './components/AgenticChatbot.jsx';
 import { demoOrders, demoCustomers, initialActivityLog } from './demoData.js';
 import { evaluateOrderRules } from './rules.js';
-import { Info, Sparkles, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Sparkles, CheckCircle2 } from 'lucide-react';
 
 export default function App() {
-  // Enriched initial orders with deterministic SLA rules
+  // Enriched initial orders with deterministic SLA rules.
   const initialEnrichedOrders = useMemo(() => {
     return demoOrders.map(order => ({
       ...order,
@@ -23,17 +24,14 @@ export default function App() {
   const [customers, setCustomers] = useState(demoCustomers);
   const [activities, setActivities] = useState(initialActivityLog);
   
-  // Selected order (defaults to #1042 for the 60s demo walkthrough)
   const [selectedOrderId, setSelectedOrderId] = useState('1042');
   const selectedOrder = orders.find(o => o.id === selectedOrderId) || orders[0];
   const selectedCustomer = customers.find(c => c.id === selectedOrder?.customerId);
   
-  // Modal states
   const [isActivityOpen, setIsActivityOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isCustomerDrawerOpen, setIsCustomerDrawerOpen] = useState(false);
 
-  // Record an action (e.g. approved email draft, AI investigation)
   const handleRecordActivity = (activityPayload) => {
     const newEntry = {
       id: `act-${Date.now()}`,
@@ -48,7 +46,6 @@ export default function App() {
     setActivities(prev => [newEntry, ...prev]);
   };
 
-  // Reset demo records to fresh initial state
   const handleResetDemo = () => {
     setOrders(demoOrders.map(o => ({ ...o, ruleEvaluation: evaluateOrderRules(o) })));
     setCustomers(demoCustomers);
@@ -59,7 +56,7 @@ export default function App() {
         timestamp: new Date().toISOString(),
         type: 'system',
         orderNumber: 'System',
-        title: 'Demo dataset reset',
+        title: 'Sample dataset reset',
         description: 'Reloaded initial sample orders and SLA criteria.',
         operator: 'System'
       },
@@ -74,7 +71,7 @@ export default function App() {
       
       {/* Top Header */}
       <Header
-        status={{ dataMode: 'demo', aiProvider: 'Deterministic (Free)', hasCustomAiKey: false }}
+        status={{ dataMode: 'sample', aiProvider: 'Deterministic', hasCustomAiKey: false }}
         isLiveStore={false}
         totalNeedingAttention={totalNeedingAttention}
         onOpenSettings={() => setIsSettingsOpen(true)}
@@ -85,15 +82,14 @@ export default function App() {
       {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
 
-        {/* Demo Mode & Safe Mode Notice */}
-        <div className="p-4 rounded-2xl bg-amber-950/20 border border-amber-500/30 text-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-md">
+        <div className="p-4 rounded-xl bg-slate-900/70 border border-slate-800 text-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-sm">
           <div className="flex items-center gap-2.5">
-            <div className="p-1.5 rounded-lg bg-amber-500/20 text-amber-300">
-              <Info className="w-4 h-4" />
+            <div className="p-1.5 rounded-xl bg-emerald-500/10 text-emerald-300">
+              <ShieldCheck className="w-4 h-4" />
             </div>
             <div>
-              <strong className="text-white">DEMO MODE ACTIVE (PROOF OF CONCEPT):</strong>{' '}
-              <span>Running on sample WooCommerce orders & customer records. Safe mode is permanently on (no emails dispatched).</span>
+              <strong className="text-white">Safe operations enabled:</strong>{' '}
+              <span>Order insights, draft generation, and activity logging run without sending customer emails automatically.</span>
             </div>
           </div>
           <div className="flex items-center gap-3 text-[11px] text-slate-400 font-medium shrink-0">
@@ -160,7 +156,7 @@ export default function App() {
       {/* Settings Modal */}
       {isSettingsOpen && (
         <SettingsModal
-          status={{ dataMode: 'demo', aiProvider: 'template' }}
+          status={{ dataMode: 'sample', aiProvider: 'template' }}
           onClose={() => setIsSettingsOpen(false)}
           onSettingsSaved={() => {}}
           onSyncWooCommerce={() => {}}
@@ -168,11 +164,24 @@ export default function App() {
         />
       )}
 
-      {/* Footer */}
+      {/* Agentic CRM Chatbot */}
+      <AgenticChatbot
+        orders={orders}
+        customers={customers}
+        activities={activities}
+        selectedOrder={selectedOrder}
+        onSelectOrder={(order) => setSelectedOrderId(order.id)}
+        onRecordActivity={handleRecordActivity}
+        onOpenActivity={() => setIsActivityOpen(true)}
+        onOpenSettings={() => setIsSettingsOpen(true)}
+      />
+
       <footer className="border-t border-slate-800/80 bg-slate-950/80 py-4 px-6 text-center text-xs text-slate-500">
-        ShopPilot AI • 2-Hour MVP • WooCommerce CRM Copilot & SLA Sentinel
+        ShopPilot AI - WooCommerce CRM Copilot & SLA Sentinel
       </footer>
 
     </div>
   );
 }
+
+
